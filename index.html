@@ -127,6 +127,26 @@
           "py-2",
           "mt-4"
         );
+
+        const size = document.createElement("p");
+        size.classList.add("text-sm", "text-gray-500", "mb-4");
+        if (dataUrl.length > 1000000) {
+          size.textContent = `Size: ${Math.round(dataUrl.length / 1000000)} MB, ${Math.round(
+            dataUrl.length / 1000
+          )} KB`;
+        } else if (dataUrl.length > 1000) {
+          size.textContent = `Size: ${Math.round(dataUrl.length / 1000)} KB, ${Math.round(
+            dataUrl.length / 1000
+          )} B`;
+        } else {
+          size.textContent = `Size: ${dataUrl.length} B`;
+        }
+
+        const dimensions = document.createElement("p");
+        dimensions.classList.add("text-sm", "text-gray-500", "mb-4");
+        dimensions.textContent = `Dimensions: ${width} x ${height}`;
+      
+
         dlBtn.textContent = "Download";
         dlBtn.addEventListener("click", function () {
           const a = document.createElement("a");
@@ -142,7 +162,10 @@
         result.innerHTML = "";
         result.appendChild(h2);
         result.appendChild(img);
+        result.appendChild(size);
+        result.appendChild(dimensions);
         result.appendChild(dlBtn);
+
       }
     });
 
@@ -178,11 +201,15 @@
           if (file.size > 1024 * 1024) {
             document.getElementById(
               "size"
-            ).innerHTML = `Size: ${Math.round(file.size / (1024 * 1024))} MB`;
+            ).innerHTML = `Size: ${Math.round(file.size / (1024 * 1024))} MB, ${Math.round(
+              file.size / 1024
+            )} KB`;
           } else {
             document.getElementById(
               "size"
-            ).innerHTML = `Size: ${Math.round(file.size / 1024)} KB`;
+            ).innerHTML = `Size: ${Math.round(file.size / 1024)} KB, ${Math.round(
+              file.size / 1024
+            )} B`;
           }
         };
       };
