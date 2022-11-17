@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Photo Resizer</title>
+  </head>
+  <body>
+    <div class="grid grid-cols-1 justify-items-center">
+      <div class="bg-white rounded-lg drop-shadow-md p-8 my-10">
+          <h1 class="text-2xl font-bold mb-4 text-center">Photo Resizer</h1>
+        <div class="grid grid-cols-1 gap-2">
+          <div id="photoDetails" class="hidden flex flex-col mb-4 items-center">
+            <img
+              id="image"
+              class="mb-4 max-w-xs object-cover p-1 border-2 border-blue-500 rounded-lg"
+              src="https://via.placeholder.com/150"
+              alt="image"
+            />
+            <p id="selectedFile" class="text-sm text-gray-500 mb-4 w-6/12"></p>
+            <p id="dimensions" class="text-sm text-gray-500 mb-4"></p>
+            <p id="size" class="text-sm text-gray-500 mb-4"></p>
+          </div>
+          <label for="file" class="mt-3 text-sm font-bold text-gray-500"
+            >Select a file</label
+          >
+          <input
+            type="file"
+            id="file"
+            onchange="handleFileSelect()"
+            class=" bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-2 border-gray-200 rounded-lg p-2"
+          />
+          <p class="text-xs text-gray-500">Supported Formats: JPG, PNG, GIF, JPEG, BMP, WEBP</p>
+          <label for="width" class="mt-3 text-sm font-bold text-gray-500">Width</label>
+          <input
+            type="number"
+            id="width"
+            class="bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-2 border-gray-200 rounded-lg p-2"
+          />
+          <p class="text-xs text-gray-500">width in pixels</p>
+          <label for="height" class="mt-3 text-sm font-bold text-gray-500">Height</label>
+          <input
+            type="number"
+            id="height"
+            class="bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-2 border-gray-200 rounded-lg p-2"
+          />
+          <p class="text-xs text-gray-500">height in pixels</p>
+          <label for="quality" class="mt-3 text-sm font-bold text-gray-500"
+            >Quality</label
+          >
+          <input
+            type="number"
+            id="quality"
+            value="90"
+            class="bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-2 border-gray-200 rounded-lg p-2"
+          />
+          <p class="text-xs text-gray-500">quality in percentage</p>
+          <button
+            id="resize"
+            class="bg-blue-500 text-white rounded-lg px-4 py-2 mt-4"
+          >
+            Resize
+          </button>
+          <div class="result flex flex-col items-center"></div>
+        </div>
+      </div>
+      <footer class="text-center text-gray-500 text-sm" id="checkAuthor">
+        <p>Photo Resizer by <a href="https://github.com/sauravhathi" target="_blank" class="text-blue-500">Saurav Hathi</a></p>
+      </footer>
+    </div>
+  </body>
+  <script>
+
+    // Get the image details and display them on the page when a file is selected by the user
+    document.getElementById("resize").addEventListener("click", function () {
+      const width = document.getElementById("width").value;
+      const height = document.getElementById("height").value;
+      const image = document.getElementById("image");
+      const quality = document.getElementById("quality").value;
+      const file = document.getElementById("file").files[0];
+      const photoDetails = document.getElementById("photoDetails");
+
+      if (!file) {
+        alert("Please select a file");
+        photoDetails.classList.add("hidden");
+        return;
+      } else if (quality < 0 || quality > 100) {
+        return;
+      } else if (!file.name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) {
+        alert("Please select a valid image file");
+        return;
+      } else {
+
+        photoDetails.classList.remove("hidden");
+        const canvas = document.createElement("canvas");
+        // canvas width and height
+        const ctx = canvas.getContext("2d");
+        canvas.width = width;
+        canvas.height = height;
+        // image width and height (original)
+        ctx.drawImage(image, 0, 0, width, height);
+        console.log("Saurav Hathi");
+        // quality/100 for compression
+        const dataUrl = canvas.toDataURL("image/jpeg", quality / 100);
+        const result = document.querySelector(".result");
+        const h2 = document.createElement("h2");
+        h2.classList.add("text-xl", "font-bold", "mb-4", "text-center");
+        h2.textContent = "Your resized photo";
+        const img = document.createElement("img");
+        img.classList.add(
+          "max-w-md",
+          "border-2",
+          "border-blue-500",
+          "p-2",
+          "rounded-lg"
+        );
+        img.alt = "image";
+        img.src = dataUrl;
+        const dlBtn = document.createElement("button");
+        dlBtn.classList.add(
+          "bg-blue-500",
+          "text-white",
+          "rounded-lg",
+          "px-4",
+          "py-2",
+          "mt-4"
+        );
+        dlBtn.textContent = "Download";
+        dlBtn.addEventListener("click", function () {
+          const a = document.createElement("a");
+          a.href = dataUrl;
+          // Selected file_
+          a.download =
+            "resized_" +
+            document
+              .getElementById("selectedFile")
+              .textContent.replace("Selected file: ", "");
+          a.click();
+        });
+        result.innerHTML = "";
+        result.appendChild(h2);
+        result.appendChild(img);
+        result.appendChild(dlBtn);
+      }
+    });
+
+    const checkAuthor = document.getElementById("checkAuthor");
+    if (checkAuthor.textContent.trim() === "Photo Resizer by Saurav Hathi") {
+    } else {
+      window.location.href = "https://github.com/sauravhathi";
+    }
+    
+    // show the image details when a file is selected by the user
+    document.getElementById("file").addEventListener("change", () => {
+      const file = document.getElementById("file").files[0];
+      // FileReader is a built-in object that allows us to read the contents of files into memory
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const img = new Image();
+        console.log("https://github.com/sauravhathi");
+        img.src = reader.result;
+        // show the image details
+        img.onload = () => {
+          document.getElementById("image").src = img.src;
+          document.getElementById(
+            "selectedFile"
+          ).innerHTML = `Selected file: ${file.name}`;
+          // display the image dimensions
+          document.getElementById(
+            "dimensions"
+          ).innerHTML = `Dimensions: ${img.width} x ${img.height}`;
+          document.getElementById("width").value = img.width;
+          document.getElementById("height").value = img.height;
+          // file size in KB
+          document.getElementById("size").innerHTML = `Filesize: ${(
+            file.size / 1024
+          ).toFixed(2)} KB`;
+        };
+      };
+    });
+
+    // validate file type
+    function handleFileSelect() {
+      // ValidityState
+      const file = document.getElementById("file").files[0];
+      const photoDetails = document.getElementById("photoDetails");
+      const validImageTypes = [
+        "image/gif",
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "image/webp",
+        "image/bmp",
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        alert("Please select a valid image file");
+        return;
+      }
+      else {
+        photoDetails.classList.remove("hidden");
+      }
+    }
+
+  </script>
+</html>
