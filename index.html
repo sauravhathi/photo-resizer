@@ -19,7 +19,7 @@
               src="https://via.placeholder.com/150"
               alt="image"
             />
-            <p id="selectedFile" class="text-sm text-gray-500 mb-4 w-6/12"></p>
+            <p id="selectedFile" class="text-sm text-gray-500 mb-4 w-7/12"></p>
             <p id="dimensions" class="text-sm text-gray-500 mb-4"></p>
             <p id="size" class="text-sm text-gray-500 mb-4"></p>
           </div>
@@ -174,10 +174,16 @@
           ).innerHTML = `Dimensions: ${img.width} x ${img.height}`;
           document.getElementById("width").value = img.width;
           document.getElementById("height").value = img.height;
-          // file size in KB
-          document.getElementById("size").innerHTML = `Filesize: ${(
-            file.size / 1024
-          ).toFixed(2)} KB`;
+          // file size in KB and MB
+          if (file.size > 1024 * 1024) {
+            document.getElementById(
+              "size"
+            ).innerHTML = `Size: ${Math.round(file.size / (1024 * 1024))} MB`;
+          } else {
+            document.getElementById(
+              "size"
+            ).innerHTML = `Size: ${Math.round(file.size / 1024)} KB`;
+          }
         };
       };
     });
