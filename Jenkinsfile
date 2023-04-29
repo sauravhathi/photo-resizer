@@ -26,7 +26,7 @@ pipeline {
     stage('docker run') {
       steps {
         script {
-          echo "Application running on http://localhost:3000/"
+          echo "Project running on http://localhost:3000/"
           dockerImage.run('--name=initial -d -p 3000:80')
         }
       }
